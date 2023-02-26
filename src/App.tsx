@@ -1,17 +1,23 @@
 import { OrbitControls } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
-import { Color } from "three";
+import * as THREE from 'three';
 
 import vertexShader from "./vertexShader";
 import fragmentShader from "./fragmentShader";
 
 import "./App.css";
 
-export default function App(): JSX.Element {
-  const Flag = () => {
+
+export function Flag():JSX.Element {
+
     // This reference will give us direct access to the mesh
-    const mesh = useRef();
+    const mesh = useRef<THREE.Mesh>(new THREE.Mesh());
+
+    useFrame(({ clock }) => {
+      const a = clock.getElapsedTime();
+      mesh.current.rotation.y = a;
+    });
 
     return (
       <mesh
@@ -29,6 +35,9 @@ export default function App(): JSX.Element {
       </mesh>
     );
   };
+
+export default function App(): JSX.Element {
+  
 
   return (
     <div className="ctn-fullscreen">
