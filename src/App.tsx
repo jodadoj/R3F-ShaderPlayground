@@ -9,7 +9,7 @@ import fragmentShader from "./fragmentShader";
 import "./App.css";
 
 
-export function Flag():JSX.Element {
+export function Example():JSX.Element {
 
     // This reference will give us direct access to the mesh
     const mesh = useRef<THREE.Mesh>(new THREE.Mesh());
@@ -24,14 +24,13 @@ export function Flag():JSX.Element {
         ref={mesh}
         position={[0, 0, 0]}
         // rotation={[-Math.PI / 2, 0, 0]}
-        rotation={[-Math.PI / 2, 0, 0]}
         scale={1.5}
       >
         <planeGeometry args={[1, 1, 32, 32]} />
         <shaderMaterial
           fragmentShader={fragmentShader}
           vertexShader={vertexShader}
-          wireframe
+          // wireframe
         />
       </mesh>
     );
@@ -42,8 +41,8 @@ export default function App(): JSX.Element {
 
   return (
     <div className="ctn-fullscreen">
-      <Canvas camera={{ position: [1.0, 1.0, 1.0] }}>
-        <Flag />
+      <Canvas camera={{ position: [0.0, 0.0, 1.0] }}>
+        <Example />
         <axesHelper />
         <OrbitControls />
       </Canvas>
