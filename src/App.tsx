@@ -1,23 +1,42 @@
-import { Canvas } from '@react-three/fiber';
-import { useRef } from 'react';
+import { OrbitControls } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { useMemo, useRef } from "react";
+import { Color } from "three";
 
+import vertexShader from "./vertexShader";
+import fragmentShader from "./fragmentShader";
 
-export default function App():JSX.Element {
+import "./App.css";
 
-  const Cube = () => {
+export default function App(): JSX.Element {
+  const Flag = () => {
+    // This reference will give us direct access to the mesh
     const mesh = useRef();
-  
+
     return (
-      <mesh ref={mesh}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshBasicMaterial color={0xffffff} />
+      <mesh
+        ref={mesh}
+        position={[0, 0, 0]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        scale={1.5}
+      >
+        <planeGeometry args={[1, 1, 32, 32]} />
+        <shaderMaterial
+          fragmentShader={fragmentShader}
+          vertexShader={vertexShader}
+          wireframe
+        />
       </mesh>
     );
   };
-  
+
   return (
-    <Canvas>
-      <Cube />
-    </Canvas>
+    <div className="ctn-fullscreen">
+      <Canvas camera={{ position: [1.0, 1.0, 1.0] }}>
+        <Flag />
+        <axesHelper />
+        <OrbitControls />
+      </Canvas>
+    </div>
   );
-};
+}
