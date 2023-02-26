@@ -24,13 +24,12 @@ export function Example():JSX.Element {
         ref={mesh}
         position={[0, 0, 0]}
         // rotation={[-Math.PI / 2, 0, 0]}
-        scale={1.5}
+        scale={1.0}
       >
         <planeGeometry args={[1, 1, 32, 32]} />
         <shaderMaterial
           fragmentShader={fragmentShader}
           vertexShader={vertexShader}
-          // wireframe
         />
       </mesh>
     );
@@ -43,7 +42,6 @@ export default function App(): JSX.Element {
     <div className="ctn-fullscreen">
       <Canvas camera={{ position: [0.0, 0.0, 1.0] }}>
         <Example />
-        <axesHelper />
         <OrbitControls />
       </Canvas>
     </div>
