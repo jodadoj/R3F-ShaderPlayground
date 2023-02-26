@@ -16,13 +16,14 @@ export function Flag():JSX.Element {
 
     useFrame(({ clock }) => {
       const a = clock.getElapsedTime();
-      mesh.current.rotation.y = a;
+      // mesh.current.rotation.y = a;
     });
 
     return (
       <mesh
         ref={mesh}
         position={[0, 0, 0]}
+        // rotation={[-Math.PI / 2, 0, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
         scale={1.5}
       >
