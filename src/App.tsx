@@ -29,12 +29,13 @@ export function Example():JSX.Element {
   
     return (
       <mesh ref={mesh} position={[0, 0, 0]}  rotation={[-Math.PI / 2, 0, 0]} scale={1.5}>
-        <boxGeometry args={[7, 1, 0, 64, 64]} />
+        {/* <boxGeometry args={[7, 1, 0, 64, 64]} /> */}
+        <planeGeometry args={[7, 1, 32, 32]} />
         <shaderMaterial
           fragmentShader={fragmentShader}
           vertexShader={vertexShader}
           uniforms={uniforms}
-          // wireframe
+          wireframe
         />
       </mesh>
     );
