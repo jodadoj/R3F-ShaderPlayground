@@ -29,7 +29,7 @@ export function Example(): JSX.Element {
     const { clock } = state;
     mesh.current.material.uniforms.u_time.value = 0.4 * clock.getElapsedTime();
 
-    mesh.current.material.uniforms.u_intensity.value = MathUtils.lerp(
+    mesh.current.material.uniforms.u_intensity.value = THREE.MathUtils.lerp(
       mesh.current.material.uniforms.u_intensity.value,
       hover.current ? 0.85 : 0.15,
       0.02
@@ -58,7 +58,7 @@ export function Example(): JSX.Element {
 export default function App(): JSX.Element {
   return (
     <div className="ctn-fullscreen">
-      <Canvas camera={{ position: [0.0, 0.0, 3.0], rotateX: -Math.PI / 4 }}>
+      <Canvas camera={{ position: [0.0, 0.0, 8.0], rotateX: -Math.PI / 4 }}>
         <Example />
         <OrbitControls />
       </Canvas>
