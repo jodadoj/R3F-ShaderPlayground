@@ -1,64 +1,38 @@
 import { OrbitControls } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { Canvas, useFrame, extend } from "@react-three/fiber";
+import { LayerMaterial, Depth, Fresnel } from "lamina";
+import { useMemo, useRef } from "react";
 import * as THREE from "three";
-
-import vertexShader from "./vertexShader";
-import fragmentShader from "./fragmentShader";
 
 import "./App.css";
 
+import CustomLayer from "./CustomLayer";
+
+extend({ CustomLayer })
+
 export function Example(): JSX.Element {
-  // This reference will give us direct access to the mesh
-  const mesh = useRef<THREE.Mesh>(new THREE.Mesh());
-  const mousePosition = useRef({ x: 0, y: 0 });
-
-  const updateMousePosition = useCallback((e) => {
-    mousePosition.current = { x: e.pageX, y: e.pageY };
-  }, []);
-
-  const uniforms = useMemo(
-    () => ({
-      u_time: {
-        value: 0.0,
-      },
-      u_mouse: { value: new THREE.Vector2(0, 0) },
-      u_bg: {
-        value: new THREE.Color("#A1A3F7"),
-      },
-      u_colorA: { value: new THREE.Color("#9FBAF9") },
-      u_colorB: { value: new THREE.Color("#FEB3D9") },
-    }),
-    []
-  );
-
-  useEffect(() => {
-    window.addEventListener("mousemove", updateMousePosition, false);
-
-    return () => {
-      window.removeEventListener("mousemove", updateMousePosition, false);
-    };
-  }, [updateMousePosition]);
+  const materialRef = useRef();
 
   useFrame((state) => {
     const { clock } = state;
-
-    mesh.current.material.uniforms.u_time.value = clock.getElapsedTime();
-    mesh.current.material.uniforms.u_mouse.value = new THREE.Vector2(
-      mousePosition.current.x,
-      mousePosition.current.y
-    );
+    materialRef.current.time = clock.getElapsedTime();
   });
 
   return (
-    <mesh ref={mesh} position={[0, 0, 0]} scale={1.5}>
-      <planeGeometry args={[1, 1, 32, 32]} />
-      <shaderMaterial
-        fragmentShader={fragmentShader}
-        vertexShader={vertexShader}
-        uniforms={uniforms}
-        wireframe={false}
-      />
+    <mesh position={[0, 0, 0]} rotation={[0, Math.PI, 0]} scale={1.5}>
+      <icosahedronGeometry args={[2, 11]} />
+      <LayerMaterial lighting="lambert">
+        {/* First layer is our own custom layer that's based of the FBM shader */}
+        {/* 
+          Notice how we can use *any* uniforms as prop here 👇
+          You can tweak the colors by adding a colorA or colorB prop!
+        */}
+        <customLayer ref={materialRef} time={0.0} lacunarity={2.3} />
+        {/* Second layer is a depth based gradient that we "add" on top of our custom layer*/}
+        <Depth colorA="blue" colorB="aqua" alpha={0.9} mode="add" />
+        {/* Third Layer is a Fresnel shading effect that we add on*/}
+        <Fresnel color="#FEB3D9" mode="add" />
+      </LayerMaterial>
     </mesh>
   );
 }
@@ -66,7 +40,9 @@ export function Example(): JSX.Element {
 export default function App(): JSX.Element {
   return (
     <div className="ctn-fullscreen">
-      <Canvas camera={{ position: [0.0, 0.0, 2.0], rotateX: -Math.PI / 4 }}>
+      <Canvas camera={{ position: [0.0, 0.0, 8.0] }}>
+        <ambientLight intensity={0.03} />
+        <directionalLight position={[0.3, 0.15, 0.0]} intensity={2} />
         <Example />
         <OrbitControls />
       </Canvas>
